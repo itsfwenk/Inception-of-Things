@@ -1,12 +1,12 @@
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "ubuntu/jammy64"
+  config.vm.box = "hashicorp-education/ubuntu-24-04"
   config.ssh.insert_key = false
 
   team_login = "fli"
-  k3s_version = "v1.33.1+k3s1"
 
   config.vm.synced_folder "./data", "/vagrant_data", create: true
+  config.vm.synced_folder "./k3s_shared_data", "/var/lib/k3s_shared", create: true, owner: "root", group: "root", mount_options: ["dmode=777", "fmode=777"]
 
   config.vm.define "#{team_login}S" do |server|
     server.vm.hostname = "#{team_login}S"
@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
       vb.cpus = "1"
     end
 
-    server.vm.provision "shell", path: "scripts/provision-server.sh", args: k3s_version
+    server.vm.provision "shell", path: "scripts/provision-server.sh", args: ["/var/lib/k3s_shared/k3s_token"]
   end
 
   config.vm.define "#{team_login}SW" do |worker|
@@ -29,7 +29,7 @@ Vagrant.configure("2") do |config|
       vb.cpus = "1"
     end
 
-    worker.vm.provision "shell", path: "scripts/provision-worker.sh", args: ["192.168.56.110", k3s_version]
+    worker.vm.provision "shell", path: "scripts/provision-worker.sh", args: ["192.168.56.110", "/var/lib/k3s_shared/k3s_token"]
   end
 
 end
