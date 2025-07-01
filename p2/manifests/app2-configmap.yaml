@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app2-html-config
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Application 2</title>
+      <style>
+        body { font-family: sans-serif; background-color: #d1c4e9; color: #4527a0; text-align: center; padding-top: 100px; }
+        h1 { color: #5e35b1; }
+      </style>
+    </head>
+    <body>
+      <h1>You've reached Application 2!</h1>
+      <p>Accessed via app2.com - This app has 3 replicas!</p>
+    </body>
+    </html>

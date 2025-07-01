@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app3-html-config
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Application 3 - Default</title>
+      <style>
+        body { font-family: sans-serif; background-color: #ffe0b2; color: #e65100; text-align: center; padding-top: 100px; }
+        h1 { color: #f57c00; }
+      </style>
+    </head>
+    <body>
+      <h1>This is the Default Application 3.</h1>
+      <p>Accessed when no specific host is matched.</p>
+    </body>
+    </html>
