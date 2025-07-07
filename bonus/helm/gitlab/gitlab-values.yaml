@@ -1,0 +1,114 @@
+# bonus/helm/gitlab/gitlab-values.yaml
+
+global:
+  hosts:
+    domain: local # This should match the suffix in your /etc/hosts entry (e.g., gitlab.local -> local)
+    hostSuffix: local # Same as above
+    gitlab:
+      name: gitlab.local # Your chosen hostname for GitLab's web UI
+      externalPort: 80 # Map to host port 80 if you used 80:80@loadbalancer
+    # ssh:
+    #   name: ssh.gitlab.local # If you want a separate hostname for SSH
+    #   externalPort: 2222 # Map to host port 2222 if you used 2222:22@loadbalancer
+
+  # Enable the built-in container registry
+  # registry:
+  #   enabled: true
+  #   host: registry.gitlab.local # Hostname for the registry
+
+  minio:
+    enabled: true # Use bundled MinIO (object storage for artifacts/uploads)
+    # For production, use external object storage like S3
+    # resources:
+    #   requests:
+    #     cpu: 100m
+    #     memory: 256Mi
+    #   limits:
+    #     cpu: 500m
+    #     memory: 512Mi
+    persistence:
+      storageClass: local-path # Use K3d's default StorageClass
+      size: 10Gi
+
+  # Configure external access
+  ingress:
+    enabled: true
+    class: traefik # K3d uses Traefik as its default ingress controller
+    tls:
+      enabled: false # For a quick local setup, disable TLS initially
+      # Use certmanager for TLS in a real setup
+    annotations:
+      kubernetes.io/ingress.class: traefik # Ensure Traefik handles it
+certmanager-issuer:
+  email: fli@student.42.fr
+
+# Reduce resource requests for a local/dev setup (still might be heavy)
+# Adjust these values based on your VM's available resources.
+# If you hit OOMKilled errors, increase these or disable components.
+gitlab:
+  webservice:
+    minReplicas: 1
+    maxReplicas: 1
+    # Increase limits/requests if facing performance issues
+    # resources:
+    #   requests:
+    #     cpu: 500m
+    #     memory: 1Gi
+  sidekiq:
+    minReplicas: 1
+    maxReplicas: 1
+  gitaly:
+    replicas: 1
+    # resources:
+    #   requests:
+    #     cpu: 500m
+    #     memory: 1Gi
+
+postgresql:
+  enabled: true # Use bundled PostgreSQL for simplicity in local lab
+  # For production, use an external managed database
+  # Set resource requests/limits here if needed
+  # resources:
+  #   requests:
+  #     cpu: 200m
+  #     memory: 512Mi
+  #   limits:
+  #     cpu: 1000m
+  #     memory: 1Gi
+  persistence:
+    storageClass: local-path # Use K3d's default StorageClass
+    size: 20Gi # Needs significant storage
+
+redis:
+  install: true
+  # enabled: true # Use bundled Redis
+  # For production, use an external managed Redis
+  # resources:
+  #   requests:
+  #     cpu: 100m
+  #     memory: 256Mi
+  #   limits:
+  #     cpu: 500m
+  #     memory: 512Mi
+  master:
+    persistence:
+      storageClass: local-path # Use K3d's default StorageClass
+      size: 5Gi
+
+# minio:
+#   enabled: true # Use bundled MinIO (object storage for artifacts/uploads)
+#   # For production, use external object storage like S3
+#   # resources:
+#   #   requests:
+#   #     cpu: 100m
+#   #     memory: 256Mi
+#   #   limits:
+#   #     cpu: 500m
+#   #     memory: 512Mi
+#   persistence:
+#     storageClass: local-path # Use K3d's default StorageClass
+#     size: 10Gi
+
+certmanager:
+  install: false # K3d might conflict if it has its own, or if you want to manage it separately.
+                  # Disable for simplicity in local lab.
