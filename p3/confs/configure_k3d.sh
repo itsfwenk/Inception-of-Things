@@ -3,7 +3,7 @@
 set -e
 
 echo "CONFIGURE_CLUSTER: Checking dependencies..."
-bash install_k3d.sh
+bash ./scripts/install_k3d.sh
 echo "CONFIGURE_CLUSTER: Creating cluster"
 sudo k3d cluster create mycluster
 
@@ -34,7 +34,7 @@ echo "CONFIGURE_CLUSTER: Creating dev namespace"
 sudo kubectl create namespace dev
 
 echo "CONFIGURE_CLUSTER: Configuring Argo CD..."
-bash ./configure_argocd.sh
+bash ./confs/configure_argocd.sh
 echo "CONFIGURE_CLUSTER: Done!"
 sudo kubectl wait --for=condition=Ready pods --all -n dev --timeout=380s
 sudo kubectl port-forward service/wil-playground-service -n dev 8888:80

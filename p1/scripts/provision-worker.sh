@@ -19,3 +19,6 @@ curl -sfL https://get.k3s.io | sh -s - agent \
 echo "  > K3s worker installation command executed."
 
 echo "  > K3s worker should be running and connected to the server."
+
+echo "  > Deleting token at ${K3S_TOKEN_FILE_PATH}."
+rm -rf ${K3S_TOKEN_FILE_PATH}
