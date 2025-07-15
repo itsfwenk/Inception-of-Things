@@ -1,6 +1,7 @@
 #!/bin/bash
 
-K3S_TOKEN_FILE_PATH=$1
+export INSTALL_K3S_EXEC="server --node-ip $1 --bind-address=$1"
+K3S_TOKEN_FILE_PATH=$2
 
 echo "  > Installing K3s server from stable channel..."
 

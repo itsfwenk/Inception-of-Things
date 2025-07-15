@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export INSTALL_K3S_EXEC="server --node-ip $1 --bind-address=$1"
+
 echo "  > Installing K3s server from stable channel..."
 
 curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644 \
